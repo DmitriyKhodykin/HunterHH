@@ -52,38 +52,49 @@ class Parser:
 
         resume_page = requests.get(ref, headers=self.headers)
         soup = Bs(resume_page.text, 'html.parser')
-        title = soup.find('title').extract().text
-        gender = soup.find('span', {'data-qa': 'resume-personal-gender'}).extract().text
-        city = soup.find('span', {'data-qa': 'resume-personal-address'}).extract().text
+
+        try:
+            title = soup.find('title').extract().text
+        except (TypeError, ValueError, AttributeError):
+            title = 'null'
+
+        try:
+            gender = soup.find('span', {'data-qa': 'resume-personal-gender'}).extract().text
+        except (TypeError, ValueError, AttributeError):
+            gender = 'null'
+
+        try:
+            city = soup.find('span', {'data-qa': 'resume-personal-address'}).extract().text
+        except (TypeError, ValueError, AttributeError):
+            city = 'null'
 
         try:
             age = int(soup.find('span', {'data-qa': 'resume-personal-age'}).extract().text[:2])
-        except AttributeError:
+        except (TypeError, ValueError, AttributeError):
             age = 0
 
         try:
             salary = soup.find('span', {'data-qa': 'resume-block-salary'}).extract().text
-        except AttributeError:
-            salary = 'null'
-
-        try:
             salary = int(salary[0:3])
-        except ValueError:
-            pass
-        try:
-            salary = int(salary[0:2])
-        except (TypeError, ValueError):
-            salary = 0
+        except (TypeError, ValueError, AttributeError):
+            try:
+                salary = soup.find('span', {'data-qa': 'resume-block-salary'}).extract().text
+                salary = int(salary[0:2])
+            except (TypeError, ValueError, AttributeError):
+                salary = 0
 
-        experience_s = soup.find('span', {
-            'class': 'resume-block__title-text resume-block__title-text_sub'
-                                        }).extract().text
         try:
+            experience_s = soup.find('span', {
+                'class': 'resume-block__title-text resume-block__title-text_sub'
+                                            }).extract().text
             experience = str(experience_s)[12:re.search('лет', str(experience_s)).end()-4]
-        except AttributeError:
-            experience = 0
+        except (TypeError, ValueError, AttributeError):
+            experience = 'null'
 
-        last_job = soup.find('div', {'class': 'resume-block__sub-title'}).extract().text
+        try:
+            last_job = soup.find('div', {'class': 'resume-block__sub-title'}).extract().text
+        except (TypeError, ValueError, AttributeError):
+            last_job = 'null'
 
         return title, gender, city, age, salary, experience, last_job
 
