@@ -18,13 +18,15 @@ def pusher():
         passwd=auth.passwd, db=auth.db, charset='utf8'
     )
 
-    # Get cursor() method for operations with local db
+    print('Get cursor() method for operations with local db')
     cursor = db_smc.cursor()
     prsr = Parser(url)
     refs = prsr.get_refs()[0]
+    print(f'Len of refs list: {len(refs)}')
     dates = prsr.get_refs()[1]
+    print(f'Len of dates list: {len(dates)}')
 
-    # Execute SQL-query
+    print('Execute SQL-query')
     for ref, dat in zip(refs, dates):
         # Def variables and their values
         entrydate = time.strftime("%Y-%m-%d")
@@ -51,7 +53,7 @@ def pusher():
             """, values)
             time.sleep(1)
 
-    # Commit
+    print('Commit')
     db_smc.commit()
     db_smc.close()
 
