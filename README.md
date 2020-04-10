@@ -5,4 +5,4 @@
 ![](/pics/hhh_logo.png)
 
 ## Final Report
-![](/pics/final_report.png)
+![](/pics/report.png)
