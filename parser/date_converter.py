@@ -12,9 +12,11 @@ def date_converter(string):
         'июля': 7, 'августа': 8, 'сентября': 9, 'октября': 10, 'ноября': 11, 'декабря': 12
     }
 
-    raw_date = string[re.match('Обновлено', string).end()+2:]
-    day = int(raw_date[:re.search(' ', raw_date).end()-1])
-    month = months_dict[raw_date[re.search(' ', raw_date).end():re.search(',', raw_date).end()-1]]
+    raw_date = str(string[re.match('Обновлено', string).end()+2:]).replace(',', '')
+    # Any number or letter before space: re.search '\w'
+    day = int(raw_date[:re.search(r'\w+', raw_date).end()])
+    # Word boundaries in line: re.search [а-я]
+    month = months_dict[raw_date[re.search(r'[а-я]', raw_date).start():re.search(r'[а-я]+', raw_date).end()]]
     year = 2020
     str_date = f'{year}{month}{day}'
     date = time.strptime(str_date, '%Y%m%d')
